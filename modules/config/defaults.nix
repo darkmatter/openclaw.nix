@@ -12,13 +12,13 @@ model: {
   model = {
     fallbacks = [
       "anthropic/claude-sonnet-4-6"
-      "openai/gpt-5.1-codex"
+      "openai/gpt-5.4"
     ];
     primary = model;
   };
   models = {
     "anthropic/claude-sonnet-4-6" = {};
-    "openai/gpt-5.1-codex" = { alias = "GPT"; };
+    "openai/gpt-5.4" = { alias = "GPT"; };
     "openrouter/auto" = { alias = "Auto"; };
   };
 }

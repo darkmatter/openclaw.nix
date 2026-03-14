@@ -2,6 +2,27 @@
 
 Nix flake for sharing a consistent OpenClaw setup across team members and machines.
 
+## Packages
+
+### `volt` — CLI for remote coding VMs
+
+```bash
+# Run directly
+nix run github:darkmatter/openclaw.nix#volt -- 1 tui
+
+# Or add to your config
+environment.systemPackages = [ openclaw-nix.packages.${system}.volt ];
+```
+
+```bash
+volt 1 tui          # TUI into volt-1
+volt 2 health       # health check
+volt ls             # list all VMs
+volt setup <token>  # store auth token
+```
+
+Configurable via env vars: `VOLT_TAILNET`, `VOLT_VM_IDS`, `VOLT_PASSWORD`.
+
 ## Quick Start
 
 ### 1. Add to your flake inputs

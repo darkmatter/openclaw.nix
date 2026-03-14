@@ -22,28 +22,37 @@
 
   outputs = { self, nixpkgs, nix-openclaw, agenix, sops-nix, ... }:
   let
-    # Shared config module — import this into your own darwin/home-manager/NixOS config
     openclawModule = import ./modules/openclaw.nix;
-
-    # Convenience: pre-built overlay that provides openclaw-gateway package
     overlay = nix-openclaw.overlays.default;
+
+    supportedSystems = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ];
+    forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
+      pkgs = import nixpkgs { inherit system; overlays = [ overlay ]; };
+      inherit system;
+    });
   in {
-    # Home-manager module for personal machines (macOS / Linux desktop)
+    # Home-manager module
     homeManagerModules = {
       openclaw = openclawModule;
       default = openclawModule;
     };
 
-    # NixOS module for headless servers / VMs
+    # NixOS module for servers / VMs
     nixosModules = {
       openclaw-gateway = nix-openclaw.nixosModules.openclaw-gateway;
       default = nix-openclaw.nixosModules.openclaw-gateway;
     };
 
-    # Re-export the overlay
+    # Overlay
     overlays.default = overlay;
 
-    # Templates for quick-start
+    # Packages
+    packages = forAllSystems ({ pkgs, ... }: {
+      volt = pkgs.callPackage ./packages/volt.nix {};
+      default = pkgs.callPackage ./packages/volt.nix {};
+    });
+
+    # Templates
     templates = {
       default = {
         path = ./templates/default;
